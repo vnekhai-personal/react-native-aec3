@@ -1,0 +1,12 @@
+node_modules/
+build/
+bench/build/
+android/build/
+android/.cxx/
+example/node_modules/
+example/ios/
+example/android/
+example/.expo/
+.DS_Store
+*.tgz
+example/package-lock.json

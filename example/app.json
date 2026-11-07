@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "AEC3 Example",
+    "slug": "react-native-aec3-example",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "com.reactnativeaec3.example",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "The example records the microphone to show the echo canceller working."
+      }
+    },
+    "android": {
+      "package": "com.reactnativeaec3.example",
+      "permissions": ["android.permission.RECORD_AUDIO", "android.permission.MODIFY_AUDIO_SETTINGS"]
+    }
+  }
+}

@@ -1,0 +1,309 @@
+# What webrtc-audio-processing 2.1's meson build compiles for its audio processing library, as plain
+# lists: WebRTC's relative to vendor/webrtc-audio-processing/webrtc, Abseil's relative to
+# vendor/abseil-cpp. Android's CMakeLists.txt and the bench read them; the podspec compiles the same files
+# (README.md).
+
+set(WEBRTC_SOURCES
+  # rtc_base
+  rtc_base/checks.cc
+  rtc_base/containers/flat_tree.cc
+  rtc_base/event.cc
+  rtc_base/event_tracer.cc
+  rtc_base/experiments/field_trial_parser.cc
+  rtc_base/logging.cc
+  rtc_base/memory/aligned_malloc.cc
+  rtc_base/platform_thread.cc
+  rtc_base/platform_thread_types.cc
+  rtc_base/race_checker.cc
+  rtc_base/random.cc
+  rtc_base/string_encode.cc
+  rtc_base/string_to_number.cc
+  rtc_base/string_utils.cc
+  rtc_base/strings/string_builder.cc
+  rtc_base/synchronization/sequence_checker_internal.cc
+  rtc_base/synchronization/yield_policy.cc
+  rtc_base/system/file_wrapper.cc
+  rtc_base/system_time.cc
+  rtc_base/time_utils.cc
+  rtc_base/zero_memory.cc
+  # api
+  api/audio/audio_frame.cc
+  api/audio/audio_processing.cc
+  api/audio/audio_processing_statistics.cc
+  api/audio/channel_layout.cc
+  api/audio/echo_canceller3_config.cc
+  api/rtp_headers.cc
+  api/rtp_packet_info.cc
+  api/task_queue/task_queue_base.cc
+  api/units/frequency.cc
+  api/units/time_delta.cc
+  api/units/timestamp.cc
+  api/video/color_space.cc
+  api/video/hdr_metadata.cc
+  api/video/video_content_type.cc
+  api/video/video_timing.cc
+  # system_wrappers
+  system_wrappers/source/cpu_features.cc
+  system_wrappers/source/denormal_disabler.cc
+  system_wrappers/source/field_trial.cc
+  system_wrappers/source/metrics.cc
+  system_wrappers/source/sleep.cc
+  # common_audio
+  common_audio/audio_converter.cc
+  common_audio/audio_util.cc
+  common_audio/channel_buffer.cc
+  common_audio/fir_filter_c.cc
+  common_audio/fir_filter_factory.cc
+  common_audio/resampler/push_resampler.cc
+  common_audio/resampler/push_sinc_resampler.cc
+  common_audio/resampler/resampler.cc
+  common_audio/resampler/sinc_resampler.cc
+  common_audio/resampler/sinusoidal_linear_chirp_source.cc
+  common_audio/ring_buffer.c
+  common_audio/signal_processing/auto_correlation.c
+  common_audio/signal_processing/auto_corr_to_refl_coef.c
+  common_audio/signal_processing/complex_bit_reverse.c
+  common_audio/signal_processing/complex_fft.c
+  common_audio/signal_processing/copy_set_operations.c
+  common_audio/signal_processing/cross_correlation.c
+  common_audio/signal_processing/division_operations.c
+  common_audio/signal_processing/dot_product_with_scale.cc
+  common_audio/signal_processing/downsample_fast.c
+  common_audio/signal_processing/filter_ar.c
+  common_audio/signal_processing/filter_ar_fast_q12.c
+  common_audio/signal_processing/energy.c
+  common_audio/signal_processing/filter_ma_fast_q12.c
+  common_audio/signal_processing/get_hanning_window.c
+  common_audio/signal_processing/get_scaling_square.c
+  common_audio/signal_processing/ilbc_specific_functions.c
+  common_audio/signal_processing/levinson_durbin.c
+  common_audio/signal_processing/lpc_to_refl_coef.c
+  common_audio/signal_processing/min_max_operations.c
+  common_audio/signal_processing/randomization_functions.c
+  common_audio/signal_processing/real_fft.c
+  common_audio/signal_processing/refl_coef_to_lpc.c
+  common_audio/signal_processing/resample_48khz.c
+  common_audio/signal_processing/resample_by_2.c
+  common_audio/signal_processing/resample_by_2_internal.c
+  common_audio/signal_processing/resample.c
+  common_audio/signal_processing/resample_fractional.c
+  common_audio/signal_processing/spl_init.c
+  common_audio/signal_processing/spl_inl.c
+  common_audio/signal_processing/splitting_filter.c
+  common_audio/signal_processing/spl_sqrt.c
+  common_audio/signal_processing/sqrt_of_one_minus_x_squared.c
+  common_audio/signal_processing/vector_scaling_operations.c
+  common_audio/smoothing_filter.cc
+  common_audio/third_party/ooura/fft_size_128/ooura_fft.cc
+  common_audio/third_party/ooura/fft_size_256/fft4g.cc
+  common_audio/third_party/spl_sqrt_floor/spl_sqrt_floor.c
+  common_audio/vad/vad.cc
+  common_audio/vad/vad_core.c
+  common_audio/vad/vad_filterbank.c
+  common_audio/vad/vad_gmm.c
+  common_audio/vad/vad_sp.c
+  common_audio/vad/webrtc_vad.c
+  # third_party
+  third_party/pffft/src/pffft.c
+  third_party/rnnoise/src/rnn_vad_weights.cc
+  modules/third_party/fft/fft.c
+  modules/audio_coding/codecs/isac/main/source/filter_functions.c
+  modules/audio_coding/codecs/isac/main/source/isac_vad.c
+  modules/audio_coding/codecs/isac/main/source/pitch_estimator.c
+  modules/audio_coding/codecs/isac/main/source/pitch_filter.c
+)
+
+set(WEBRTC_APM_SOURCES
+  aec_dump/null_aec_dump_factory.cc
+  aec3/adaptive_fir_filter.cc
+  aec3/adaptive_fir_filter_erl.cc
+  aec3/aec3_common.cc
+  aec3/aec3_fft.cc
+  aec3/aec_state.cc
+  aec3/alignment_mixer.cc
+  aec3/api_call_jitter_metrics.cc
+  aec3/block_buffer.cc
+  aec3/block_delay_buffer.cc
+  aec3/block_framer.cc
+  aec3/block_processor.cc
+  aec3/block_processor_metrics.cc
+  aec3/clockdrift_detector.cc
+  aec3/coarse_filter_update_gain.cc
+  aec3/comfort_noise_generator.cc
+  aec3/config_selector.cc
+  aec3/decimator.cc
+  aec3/dominant_nearend_detector.cc
+  aec3/downsampled_render_buffer.cc
+  aec3/echo_audibility.cc
+  aec3/echo_canceller3.cc
+  aec3/echo_path_delay_estimator.cc
+  aec3/echo_path_variability.cc
+  aec3/echo_remover.cc
+  aec3/echo_remover_metrics.cc
+  aec3/erle_estimator.cc
+  aec3/erl_estimator.cc
+  aec3/fft_buffer.cc
+  aec3/filter_analyzer.cc
+  aec3/frame_blocker.cc
+  aec3/fullband_erle_estimator.cc
+  aec3/matched_filter.cc
+  aec3/matched_filter_lag_aggregator.cc
+  aec3/moving_average.cc
+  aec3/multi_channel_content_detector.cc
+  aec3/refined_filter_update_gain.cc
+  aec3/render_buffer.cc
+  aec3/render_delay_buffer.cc
+  aec3/render_delay_controller.cc
+  aec3/render_delay_controller_metrics.cc
+  aec3/render_signal_analyzer.cc
+  aec3/residual_echo_estimator.cc
+  aec3/reverb_decay_estimator.cc
+  aec3/reverb_frequency_response.cc
+  aec3/reverb_model.cc
+  aec3/reverb_model_estimator.cc
+  aec3/signal_dependent_erle_estimator.cc
+  aec3/spectrum_buffer.cc
+  aec3/stationarity_estimator.cc
+  aec3/subband_erle_estimator.cc
+  aec3/subband_nearend_detector.cc
+  aec3/subtractor.cc
+  aec3/subtractor_output_analyzer.cc
+  aec3/subtractor_output.cc
+  aec3/suppression_filter.cc
+  aec3/suppression_gain.cc
+  aec3/transparent_mode.cc
+  aecm/aecm_core.cc
+  aecm/aecm_core_c.cc
+  aecm/echo_control_mobile.cc
+  agc/agc.cc
+  agc/agc_manager_direct.cc
+  agc/legacy/analog_agc.cc
+  agc/legacy/digital_agc.cc
+  agc/loudness_histogram.cc
+  agc/utility.cc
+  agc2/adaptive_digital_gain_controller.cc
+  agc2/agc2_testing_common.cc
+  agc2/biquad_filter.cc
+  agc2/clipping_predictor.cc
+  agc2/clipping_predictor_level_buffer.cc
+  agc2/compute_interpolated_gain_curve.cc
+  agc2/cpu_features.cc
+  agc2/fixed_digital_level_estimator.cc
+  agc2/gain_applier.cc
+  agc2/input_volume_controller.cc
+  agc2/input_volume_stats_reporter.cc
+  agc2/interpolated_gain_curve.cc
+  agc2/limiter.cc
+  agc2/limiter_db_gain_curve.cc
+  agc2/noise_level_estimator.cc
+  agc2/rnn_vad/auto_correlation.cc
+  agc2/rnn_vad/features_extraction.cc
+  agc2/rnn_vad/lp_residual.cc
+  agc2/rnn_vad/pitch_search.cc
+  agc2/rnn_vad/pitch_search_internal.cc
+  agc2/rnn_vad/rnn.cc
+  agc2/rnn_vad/rnn_fc.cc
+  agc2/rnn_vad/rnn_gru.cc
+  agc2/rnn_vad/spectral_features.cc
+  agc2/rnn_vad/spectral_features_internal.cc
+  agc2/saturation_protector.cc
+  agc2/saturation_protector_buffer.cc
+  agc2/speech_level_estimator.cc
+  agc2/speech_probability_buffer.cc
+  agc2/vad_wrapper.cc
+  agc2/vector_float_frame.cc
+  audio_buffer.cc
+  audio_processing_builder_impl.cc
+  audio_processing_impl.cc
+  capture_levels_adjuster/audio_samples_scaler.cc
+  capture_levels_adjuster/capture_levels_adjuster.cc
+  echo_control_mobile_impl.cc
+  echo_detector/circular_buffer.cc
+  echo_detector/mean_variance_estimator.cc
+  echo_detector/moving_max.cc
+  echo_detector/normalized_covariance_estimator.cc
+  gain_control_impl.cc
+  gain_controller2.cc
+  high_pass_filter.cc
+  include/aec_dump.cc
+  include/audio_frame_proxies.cc
+  logging/apm_data_dumper.cc
+  ns/fast_math.cc
+  ns/histograms.cc
+  ns/noise_estimator.cc
+  ns/noise_suppressor.cc
+  ns/ns_fft.cc
+  ns/prior_signal_model.cc
+  ns/prior_signal_model_estimator.cc
+  ns/quantile_noise_estimator.cc
+  ns/signal_model.cc
+  ns/signal_model_estimator.cc
+  ns/speech_probability_estimator.cc
+  ns/suppression_params.cc
+  ns/wiener_filter.cc
+  residual_echo_detector.cc
+  rms_level.cc
+  splitting_filter.cc
+  three_band_filter_bank.cc
+  utility/cascaded_biquad_filter.cc
+  utility/delay_estimator.cc
+  utility/delay_estimator_wrapper.cc
+  utility/pffft_wrapper.cc
+  vad/gmm.cc
+  vad/pitch_based_vad.cc
+  vad/pitch_internal.cc
+  vad/pole_zero_filter.cc
+  vad/standalone_vad.cc
+  vad/vad_audio_proc.cc
+  vad/vad_circular_buffer.cc
+  vad/voice_activity_detector.cc
+)
+list(TRANSFORM WEBRTC_APM_SOURCES PREPEND modules/audio_processing/)
+list(APPEND WEBRTC_SOURCES ${WEBRTC_APM_SOURCES})
+
+# ARM with NEON (arm64-v8a, armeabi-v7a, iPhone, Apple silicon).
+set(WEBRTC_NEON_SOURCES
+  common_audio/fir_filter_neon.cc
+  common_audio/resampler/sinc_resampler_neon.cc
+  common_audio/signal_processing/cross_correlation_neon.c
+  common_audio/signal_processing/downsample_fast_neon.c
+  common_audio/signal_processing/min_max_operations_neon.c
+  common_audio/third_party/ooura/fft_size_128/ooura_fft_neon.cc
+  modules/audio_processing/aecm/aecm_core_neon.cc
+)
+
+# x86 and x86_64: SSE2 kernels (x86_64's baseline) and AVX2 ones, chosen at run time.
+set(WEBRTC_SSE2_SOURCES
+  common_audio/fir_filter_sse.cc
+  common_audio/resampler/sinc_resampler_sse.cc
+  common_audio/third_party/ooura/fft_size_128/ooura_fft_sse2.cc
+)
+set(WEBRTC_AVX2_SOURCES
+  common_audio/fir_filter_avx2.cc
+  common_audio/resampler/sinc_resampler_avx2.cc
+  modules/audio_processing/aec3/adaptive_fir_filter_avx2.cc
+  modules/audio_processing/aec3/adaptive_fir_filter_erl_avx2.cc
+  modules/audio_processing/aec3/fft_data_avx2.cc
+  modules/audio_processing/aec3/matched_filter_avx2.cc
+  modules/audio_processing/aec3/vector_math_avx2.cc
+  modules/audio_processing/agc2/rnn_vad/vector_math_avx2.cc
+)
+
+set(WEBRTC_ANDROID_SOURCES
+  rtc_base/system/warn_current_thread_is_deadlocked.cc
+)
+
+# The few Abseil files WebRTC links against (string formatting); the rest of what it uses is headers.
+set(ABSL_SOURCES
+  absl/base/internal/raw_logging.cc
+  absl/base/internal/throw_delegate.cc
+  absl/numeric/int128.cc
+  absl/strings/ascii.cc
+  absl/strings/charconv.cc
+  absl/strings/internal/charconv_bigint.cc
+  absl/strings/internal/charconv_parse.cc
+  absl/strings/internal/memutil.cc
+  absl/strings/match.cc
+  absl/strings/numbers.cc
+  absl/strings/str_cat.cc
+)

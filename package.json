@@ -1,0 +1,61 @@
+{
+  "name": "react-native-aec3",
+  "version": "0.1.0",
+  "description": "WebRTC's AEC3 echo canceller for React Native voice agents, on top of the platform's own echo cancellation.",
+  "license": "MIT",
+  "homepage": "https://github.com/vnekhai-personal/react-native-aec3#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vnekhai-personal/react-native-aec3.git"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "aec",
+    "aec3",
+    "echo-cancellation",
+    "webrtc",
+    "voice-agent",
+    "audio"
+  ],
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "react-native": "src/index.ts",
+  "source": "src/index.ts",
+  "files": [
+    "android",
+    "bench",
+    "build",
+    "cpp",
+    "ios",
+    "src",
+    "vendor",
+    "CHANGELOG.md",
+    "THIRD_PARTY.md",
+    "expo-module.config.json",
+    "ReactNativeAec3.podspec",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "vendor": "node scripts/vendor.mjs",
+    "vendor:check": "node scripts/vendor.mjs --check",
+    "prepack": "npm run build"
+  },
+  "peerDependencies": {
+    "expo": "*",
+    "react-native": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "expo": "~58.0.23",
+    "expo-modules-core": "~58.0.30",
+    "react": "19.3.0",
+    "react-native": "0.88.1",
+    "typescript": "~5.9.0",
+    "vitest": "^4.0.0"
+  }
+}

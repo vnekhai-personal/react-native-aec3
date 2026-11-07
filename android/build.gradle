@@ -1,0 +1,40 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+// The architectures the app builds for (gradle.properties' reactNativeArchitectures), as expo-sqlite reads them.
+def reactNativeArchitectures() {
+  def value = project.getProperties().get("reactNativeArchitectures")
+  return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+}
+
+group = 'com.reactnativeaec3'
+version = '0.1.0'
+
+android {
+  namespace "com.reactnativeaec3"
+  defaultConfig {
+    versionCode 1
+    versionName "0.1.0"
+    externalNativeBuild {
+      cmake {
+        abiFilters (*reactNativeArchitectures())
+        // 16 KB pages (Android 15) as well as 4 KB, which Google Play requires of native code.
+        arguments "-DANDROID_STL=c++_shared", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+      }
+    }
+  }
+  externalNativeBuild {
+    cmake {
+      path "CMakeLists.txt"
+    }
+  }
+  packagingOptions {
+    // The app ships the shared C++ runtime itself.
+    excludes += ["**/libc++_shared.so"]
+  }
+  lintOptions {
+    abortOnError false
+  }
+}
