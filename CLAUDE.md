@@ -52,7 +52,7 @@ npm test               # vitest
 npm run typecheck
 npm run build          # tsc → build/
 npm run vendor:check   # re-derives vendor/ from the pinned archives (Xcode + Android NDK, ~2 min)
-npm pack               # the tarball example/ installs
+npm pack               # the tarball to install into example/ while testing the working tree
 ```
 
 ```sh
@@ -75,8 +75,10 @@ If prebuild's `pod install` fails on the locale: `LANG=en_US.UTF-8 LC_ALL=en_US.
 - `npm test` and `npm run typecheck` pass; `npm run vendor:check` too if `vendor/`, `cpp/sources.cmake` or
   the podspec's lists changed.
 - A native change (`cpp/`, `ios/`, `android/`, the podspec, the CMake files) is proven before it is committed:
-  `npm pack`, reinstall in `example/`, Release builds for both platforms, the self-test read on an iOS
-  Simulator and an Android emulator. A build that compiles can still discard AEC3's output; one did. Read the
+  `npm pack`, then `cd example && npm install ../react-native-aec3-0.1.0.tgz`, which replaces the published
+  version the example depends on with the working tree for this checkout only (`example/package-lock.json` is
+  gitignored, so the swap never reaches a commit); Release builds for both platforms; the self-test read on an
+  iOS Simulator and an Android emulator. A build that compiles can still discard AEC3's output; one did. Read the
   `BUILD SUCCEEDED` line, not a wrapper's exit code.
 - A change to the pairing gets a vitest that fails on the old code and passes on the new.
 

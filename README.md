@@ -270,7 +270,6 @@ AEC3: whether `process` wrote the result back, what it removed, the delay it fou
 reply through the speaker every few seconds and shows the microphone before and after AEC3.
 
 ```sh
-npm install && npm pack
 cd example && npm install
 npx expo run:ios --device     # or: npx expo run:android --device
 ```

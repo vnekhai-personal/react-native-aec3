@@ -6,7 +6,7 @@
   "homepage": "https://github.com/vnekhai-personal/react-native-aec3#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vnekhai-personal/react-native-aec3.git"
+    "url": "git+https://github.com/vnekhai-personal/react-native-aec3.git"
   },
   "keywords": [
     "react-native",
