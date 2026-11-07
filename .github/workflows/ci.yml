@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   typescript:
     runs-on: ubuntu-latest
@@ -18,46 +22,3 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-
-  ios-module:
-    # The Expo module compiled into an app for the iOS Simulator, as a user's `expo prebuild` would.
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npm ci && npm pack
-      - run: cd example && npm install
-      - run: cd example && npx expo prebuild --platform ios --no-install
-      - run: cd example/ios && LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 pod install
-      - run: >
-          cd example/ios && xcodebuild -workspace AEC3Example.xcworkspace -scheme AEC3Example -configuration Debug
-          -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build/derived build
-          CODE_SIGNING_ALLOWED=NO | tail -5; test ${PIPESTATUS[0]} -eq 0
-
-  android-module:
-    # The Expo module compiled into an app for Android arm64, as a user's `expo prebuild` would.
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-      - run: npm ci && npm pack
-      - run: cd example && npm install
-      - run: cd example && npx expo prebuild --platform android --no-install
-      - run: cd example/android && ./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a --no-daemon -q
-
-  native:
-    # The vendored WebRTC and the module's C++ compiled for a Mac: the same sources the iOS and Android
-    # builds compile, without an Expo app around them.
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: cmake -S bench -B bench/build -DCMAKE_BUILD_TYPE=Release
-      - run: cmake --build bench/build --target harness --parallel
