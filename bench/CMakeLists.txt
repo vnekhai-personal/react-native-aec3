@@ -1,5 +1,6 @@
-# The module's own native code and its vendored sources built for this Mac, with a harness that runs it
-# over recorded audio (README.md, "Measuring"). Not part of the app builds.
+# The module's own native code and its vendored sources built for a Mac or a Linux machine, with a harness that
+# runs it over recorded audio (the usage note at the top of harness.cc). Not part of the app builds; CI compiles
+# it on Linux to prove the vendored tree and sources.cmake are complete on a clean machine.
 cmake_minimum_required(VERSION 3.18)
 project(rn_aec3_bench C CXX)
 
@@ -23,7 +24,12 @@ foreach(source ${ABSL_SOURCES})
   list(APPEND sources "${ABSL_DIR}/${source}")
 endforeach()
 
-set(defines WEBRTC_POSIX WEBRTC_MAC WEBRTC_LIBRARY_IMPL WEBRTC_APM_DEBUG_DUMP=0 NDEBUG)
+set(defines WEBRTC_POSIX WEBRTC_LIBRARY_IMPL WEBRTC_APM_DEBUG_DUMP=0 NDEBUG)
+if(APPLE)
+  list(APPEND defines WEBRTC_MAC)
+else()
+  list(APPEND defines WEBRTC_LINUX)
+endif()
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm64|aarch64")
   list(APPEND defines WEBRTC_ARCH_ARM64 WEBRTC_HAS_NEON)
   foreach(source ${WEBRTC_NEON_SOURCES})
@@ -47,4 +53,9 @@ target_compile_definitions(rn_aec3 PUBLIC ${defines})
 target_compile_options(rn_aec3 PRIVATE -O2 -w)
 
 add_executable(harness harness.cc)
-target_link_libraries(harness rn_aec3 "-framework CoreFoundation")
+if(APPLE)
+  target_link_libraries(harness rn_aec3 "-framework CoreFoundation")
+else()
+  find_package(Threads REQUIRED)
+  target_link_libraries(harness rn_aec3 Threads::Threads)
+endif()

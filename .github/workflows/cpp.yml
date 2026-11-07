@@ -1,0 +1,37 @@
+name: C++
+
+# The vendored WebRTC and the module's wrapper compiled on a clean machine, which proves vendor/ and
+# cpp/sources.cmake are complete. Only when they could have changed. The iOS and Android builds and the
+# example's self-test are run locally before a native change is committed (CLAUDE.md).
+on:
+  push:
+    branches: [main]
+    paths:
+      - cpp/**
+      - vendor/**
+      - bench/**
+      - .github/workflows/cpp.yml
+  pull_request:
+    paths:
+      - cpp/**
+      - vendor/**
+      - bench/**
+      - .github/workflows/cpp.yml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: cmake -S bench -B bench/build -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build bench/build --target harness --parallel "$(nproc)"
+      # Half a second of silence through the canceller: the binary runs and AEC3 is made for the default rates.
+      - run: |
+          head -c 32000 /dev/zero > mic.f32
+          head -c 48000 /dev/zero > ref.f32
+          bench/build/harness mic.f32 ref.f32 out.f32 | tee harness.json
+          grep -q '"frames":50' harness.json
